@@ -16,6 +16,7 @@ Vue.use(VueRouter)
 //导入主页组件
 import index from './components/index.vue'
 import cart from './components/cart.vue'
+import detail from './components/detail.vue'
 
 
 
@@ -23,7 +24,8 @@ import cart from './components/cart.vue'
 let routes =[
   {path:'/',component:index},
   {path:'/index',component:index},
-  {path:'/cart',component:cart}
+  {path:'/cart',component:cart},
+  {path:'/detail/:id',component:detail}
 ]
 
 //新建路由实例
