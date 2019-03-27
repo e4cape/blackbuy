@@ -15,12 +15,15 @@ Vue.use(VueRouter)
 
 //导入主页组件
 import index from './components/index.vue'
+import cart from './components/cart.vue'
+
 
 
 //新建路由规则
 let routes =[
   {path:'/',component:index},
-  {path:'/index',component:index}
+  {path:'/index',component:index},
+  {path:'/cart',component:cart}
 ]
 
 //新建路由实例
