@@ -587,7 +587,24 @@
 </template>
 
 <script>
+//导入axios
+import axios from 'axios';
 export default {
+    name:'index',
+    data(){
+        return {
+            catelist:[],
+            sliderlist:[],
+            toplist:[]
+        }
+    },
+    created() {
+        axios.get('http://111.230.232.110:8899/site/goods/gettopdata/goods').then(res=>{
+            this.catelist = res.data.message.catelist;
+            this.sliderlist= res.data.message.sliderlist;
+            this.toplist = res.data.message.toplist;
+        })
+    }
 
 }
 </script>
