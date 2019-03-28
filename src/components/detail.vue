@@ -106,6 +106,7 @@
                           sucmsg=" "
                           data-type="*10-1000"
                           nullmsg="请填写评论内容！"
+                          v-model="comment"
                         ></textarea>
                         <span class="Validform_checktip"></span>
                       </div>
@@ -116,6 +117,7 @@
                           type="submit"
                           value="提交评论"
                           class="submit"
+                          @click="postComment"
                         >
                         <span class="Validform_checktip"></span>
                       </div>
@@ -208,7 +210,8 @@ export default {
       index: 1,
       hotgoodslist: [],
       num1: 1,
-      sliderlist:[]
+      sliderlist:[],
+      comment:''
     };
   },
   methods: {
@@ -225,6 +228,21 @@ export default {
     },
     handleChange(value) {
       console.log("值改变了");
+    },
+    postComment() {
+      if(this.comment==='') {
+        this.$message.error('输入消息为空,请重新输入!');
+      }else {
+        this.$axios.post(`site/validate/comment/post/goods/${this.$route.params.id}`,{
+          commenttxt:this.comment
+        }).then(res=>{
+          if(res.data.status === 0) {
+            this.$message.success(res.data.message)
+          }
+        })
+
+        this.comment = '';
+      }
     }
   },
   // filters:{
