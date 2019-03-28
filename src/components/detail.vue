@@ -17,7 +17,7 @@
                 <el-carousel>
                   <el-carousel-item v-for="(item,index) in sliderlist" :key="index">
                     <!-- <h3>{{ item }}</h3> -->
-                    <img :src="item.thumb_path" alt="">
+                    <img :src="item.thumb_path" alt>
                   </el-carousel-item>
                 </el-carousel>
               </div>
@@ -127,37 +127,30 @@
                     <p
                       style="margin: 5px 0px 15px 69px; line-height: 42px; text-align: center; border: 1px solid rgb(247, 247, 247);"
                     >暂无评论，快来抢沙发吧！</p>
-                    <li>
+                    <li v-for="item in commentList">
                       <div class="avatar-box">
                         <i class="iconfont icon-user-full"></i>
                       </div>
                       <div class="inner-box">
                         <div class="info">
-                          <span>匿名用户</span>
-                          <span>2017/10/23 14:58:59</span>
+                          <span>{{item.user_name}}</span>
+                          <span>{{item.add_time | globalFormatTime('YYYY-MM-DDTHH:mm:ss')}}</span>
                         </div>
-                        <p>testtesttest</p>
+                        <p>{{item.content}}</p>
                       </div>
                     </li>
-                    <li>
-                      <div class="avatar-box">
-                        <i class="iconfont icon-user-full"></i>
-                      </div>
-                      <div class="inner-box">
-                        <div class="info">
-                          <span>匿名用户</span>
-                          <span>2017/10/23 14:59:36</span>
-                        </div>
-                        <p>很清晰调动单很清晰调动单</p>
-                      </div>
-                    </li>
+                    
                   </ul>
                   <div class="page-box" style="margin: 5px 0px 0px 62px;">
-                    <div id="pagination" class="digg">
-                      <span class="disabled">« 上一页</span>
-                      <span class="current">1</span>
-                      <span class="disabled">下一页 »</span>
-                    </div>
+                    <el-pagination
+                      @size-change="handleSizeChange"
+                      @current-change="handleCurrentChange"
+                      :current-page="pageIndex"
+                      :page-sizes="[10, 20, 30, 40]"
+                      :page-size="pageSize"
+                      layout="total, sizes, prev, pager, next, jumper"
+                      :total="totalCount"
+                    ></el-pagination>
                   </div>
                 </div>
               </div>
@@ -210,8 +203,12 @@ export default {
       index: 1,
       hotgoodslist: [],
       num1: 1,
-      sliderlist:[],
-      comment:''
+      sliderlist: [],
+      comment: "",
+      pageIndex:1,
+      pageSize:10,
+      totalCount:0,
+      commentList:[]
     };
   },
   methods: {
@@ -230,19 +227,41 @@ export default {
       console.log("值改变了");
     },
     postComment() {
-      if(this.comment==='') {
-        this.$message.error('输入消息为空,请重新输入!');
-      }else {
-        this.$axios.post(`site/validate/comment/post/goods/${this.$route.params.id}`,{
-          commenttxt:this.comment
-        }).then(res=>{
-          if(res.data.status === 0) {
-            this.$message.success(res.data.message)
-          }
-        })
+      if (this.comment === "") {
+        this.$message.error("输入消息为空,请重新输入!");
+      } else {
+        this.$axios
+          .post(`site/validate/comment/post/goods/${this.$route.params.id}`, {
+            commenttxt: this.comment
+          })
+          .then(res => {
+            if (res.data.status === 0) {
+              this.$message.success(res.data.message);
+            }
+          });
 
-        this.comment = '';
+        this.comment = "";
       }
+    },
+    getComments() {
+      this.$axios
+          .get(`site/comment/getbypage/goods/${this.$route.params.id}?pageIndex=${this.pageIndex}&pageSize=${this.pageSize}`)
+          .then(res => {
+            // console.log(res);
+            this.totalCount = res.data.totalcount;
+            this.commentList = res.data.message;
+            
+          });
+    },
+    //饿了么分页插件的页容量改变事件
+    handleSizeChange(size) {
+      this.pageSize =size;
+      this.getComments();
+    },
+    //饿了么分页插件的当前页码改变事件
+    handleCurrentChange(current) {
+      this.pageIndex = current;
+      this.getComments();
     }
   },
   // filters:{
@@ -253,17 +272,9 @@ export default {
   created() {
     //获取商品详情数据
     this.getDetail();
-
     //获取评论
-    //  this.$axios
-    //   .get(
-    //     `/site/comment/getbypage/goods/${
-    //       this.$route.params.id
-    //     }?pageIndex=1&pageSize=10`
-    //   )
-    //   .then(res => {
-    //     console.log(res);
-    //   });
+    this.getComments();
+
   },
   watch: {
     //监听器
@@ -285,7 +296,7 @@ export default {
   height: 100%;
 }
 
-.pic-box .el-carousel__container{
+.pic-box .el-carousel__container {
   width: 100%;
   height: 100%;
 }
