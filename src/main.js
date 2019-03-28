@@ -1,6 +1,13 @@
 import Vue from 'vue'
 import App from './App.vue'
 
+
+//导入饿了么UI组件
+import ElementUI from 'element-ui';
+import 'element-ui/lib/theme-chalk/index.css';
+
+Vue.use(ElementUI);
+
 //导入全局的样式
 // import style from './assets/statics/site/css/style.css'
 import './assets/statics/site/css/style.css'
@@ -29,6 +36,10 @@ Vue.filter('globalFormatTime',function(value,formatT){
     return moment(value).format('YYYY-MM-DD');
   }
 })
+
+
+
+
 
 //导入主页组件
 import index from './components/index.vue'

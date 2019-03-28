@@ -38,37 +38,16 @@
                 <div class="spec-box">
                   <dl>
                     <dt>购买数量</dt>
+
                     <dd>
                       <div class="stock-box">
-                        <div class="el-input-number el-input-number--small">
-                          <span role="button" class="el-input-number__decrease is-disabled">
-                            <i class="el-icon-minus"></i>
-                          </span>
-                          <span role="button" class="el-input-number__increase">
-                            <i class="el-icon-plus"></i>
-                          </span>
-                          <div class="el-input el-input--small">
-                            <!---->
-                            <input
-                              autocomplete="off"
-                              size="small"
-                              type="text"
-                              rows="2"
-                              max="60"
-                              min="1"
-                              validateevent="true"
-                              class="el-input__inner"
-                              role="spinbutton"
-                              aria-valuemax="60"
-                              aria-valuemin="1"
-                              aria-valuenow="1"
-                              aria-disabled="false"
-                            >
-                            <!---->
-                            <!---->
-                            <!---->
-                          </div>
-                        </div>
+                        <el-input-number
+                          v-model="num1"
+                          @change="handleChange"
+                          :min="1"
+                          :max="10"
+                          label="描述文字"
+                        ></el-input-number>
                       </div>
                       <span class="stock-txt">
                         库存
@@ -221,19 +200,22 @@ export default {
       goodsinfo: {},
       index: 1,
       hotgoodslist: [],
-      
+      num1: 1
     };
   },
-  methods:{
+  methods: {
     getDetail() {
-        //获取商品详情数据
-        this.$axios
-          .get(`/site/goods/getgoodsinfo/${this.$route.params.id}`)
-          .then(res => {
-            console.log(res);
-            this.goodsinfo = res.data.message.goodsinfo;
-            this.hotgoodslist = res.data.message.hotgoodslist;
-          });
+      //获取商品详情数据
+      this.$axios
+        .get(`/site/goods/getgoodsinfo/${this.$route.params.id}`)
+        .then(res => {
+          console.log(res);
+          this.goodsinfo = res.data.message.goodsinfo;
+          this.hotgoodslist = res.data.message.hotgoodslist;
+        });
+    },
+    handleChange(value) {
+        console.log('值改变了');
       }
   },
   // filters:{
@@ -256,11 +238,11 @@ export default {
     //     console.log(res);
     //   });
   },
-  watch: {//监听器
-    $route(value,oldValue) {
+  watch: {
+    //监听器
+    $route(value, oldValue) {
       this.getDetail();
     }
-
   }
 };
 </script>
