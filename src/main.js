@@ -19,6 +19,17 @@ Vue.prototype.$axios = axios
 //设置基地址
 axios.defaults.baseURL='http://111.230.232.110:8899'
 
+//导入moment
+import moment from 'moment'
+//全局过滤器
+Vue.filter('globalFormatTime',function(value,formatT){
+  if(formatT) {
+    return moment(value).format(formatT);
+  }else {
+    return moment(value).format('YYYY-MM-DD');
+  }
+})
+
 //导入主页组件
 import index from './components/index.vue'
 import cart from './components/cart.vue'

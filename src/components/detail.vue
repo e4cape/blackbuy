@@ -13,8 +13,7 @@
         <div class="wrap-box">
           <div class="left-925">
             <div class="goods-box clearfix">
-              <div class="pic-box">
-              </div>
+              <div class="pic-box"></div>
               <div class="goods-spec">
                 <h1>{{goodsinfo.title}}</h1>
                 <p class="subtitle">{{goodsinfo.sub_title}}</p>
@@ -181,22 +180,24 @@
               <div class="sidebar-box">
                 <h4>推荐商品</h4>
                 <ul class="side-img-list">
-                    <!-- 推荐商品区域 -->
+                  <!-- 推荐商品区域 -->
                   <li v-for="item in hotgoodslist">
                     <div class="img-box">
-                      <a href="#/site/goodsinfo/90" class>
-                        <img
-                          :src="item.img_url"
-                        >
-                      </a>
+                      <!-- <a href="#/site/goodsinfo/90" class> -->
+                      <router-link :to="'/detail/'+item.id">
+                        <img :src="item.img_url">
+                        <!-- </a> -->
+                      </router-link>
                     </div>
                     <div class="txt-box">
-                      <a href="#/site/goodsinfo/90" class>{{item.title}}</a>
+                      <router-link :to="'/detail/'+item.id">
+                        {{item.title}}
+                        <!-- <a href="#/site/goodsinfo/90" class>{{item.title}}</a> -->
+                      </router-link>
                       <!-- 时间过滤器 -->
-                      <span>{{item.add_time | formatTime}}</span>
+                      <span>{{item.add_time | globalFormatTime('YYYY年MM月DD日')}}</span>
                     </div>
                   </li>
-                  
                 </ul>
               </div>
             </div>
@@ -211,7 +212,7 @@
 // 导入axios
 // import axios from "axios";
 // 导入moment
-import moment from 'moment';
+// import moment from 'moment';
 
 export default {
   name: "detail",
@@ -219,42 +220,47 @@ export default {
     return {
       goodsinfo: {},
       index: 1,
-      hotgoodslist:[]
+      hotgoodslist: [],
+      
     };
   },
-  filters:{
-     formatTime(value) {
-        return moment(value).format('YYYY-MM-DD');
-     }
+  methods:{
+    getDetail() {
+        //获取商品详情数据
+        this.$axios
+          .get(`/site/goods/getgoodsinfo/${this.$route.params.id}`)
+          .then(res => {
+            console.log(res);
+            this.goodsinfo = res.data.message.goodsinfo;
+            this.hotgoodslist = res.data.message.hotgoodslist;
+          });
+      }
   },
+  // filters:{
+  //   //  formatTime(value) {
+  //   //     return moment(value).format('YYYY-MM-DD');
+  //   //  }
+  // },
   created() {
     //获取商品详情数据
-    this.$axios
-      .get(
-        `/site/goods/getgoodsinfo/${
-          this.$route.params.id
-        }`
-      )
-      .then(res => {
-        console.log(res);
-        this.goodsinfo = res.data.message.goodsinfo;
-        this.hotgoodslist=res.data.message.hotgoodslist;
-      });
+    this.getDetail();
 
-      //获取评论
-     this.$axios
-      .get(
-        `/site/comment/getbypage/goods/${
-          this.$route.params.id
-        }?pageIndex=1&pageSize=10`
-      )
-      .then(res => {
-        console.log(res);
-      });
+    //获取评论
+    //  this.$axios
+    //   .get(
+    //     `/site/comment/getbypage/goods/${
+    //       this.$route.params.id
+    //     }?pageIndex=1&pageSize=10`
+    //   )
+    //   .then(res => {
+    //     console.log(res);
+    //   });
+  },
+  watch: {//监听器
+    $route(value,oldValue) {
+      this.getDetail();
+    }
 
-      
-
-      
   }
 };
 </script>
