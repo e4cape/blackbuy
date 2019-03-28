@@ -209,7 +209,7 @@
 
 <script>
 // 导入axios
-import axios from "axios";
+// import axios from "axios";
 // 导入moment
 import moment from 'moment';
 
@@ -229,9 +229,9 @@ export default {
   },
   created() {
     //获取商品详情数据
-    axios
+    this.$axios
       .get(
-        `http://111.230.232.110:8899/site/goods/getgoodsinfo/${
+        `/site/goods/getgoodsinfo/${
           this.$route.params.id
         }`
       )
@@ -239,6 +239,17 @@ export default {
         console.log(res);
         this.goodsinfo = res.data.message.goodsinfo;
         this.hotgoodslist=res.data.message.hotgoodslist;
+      });
+
+      //获取评论
+     this.$axios
+      .get(
+        `/site/comment/getbypage/goods/${
+          this.$route.params.id
+        }?pageIndex=1&pageSize=10`
+      )
+      .then(res => {
+        console.log(res);
       });
 
       

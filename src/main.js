@@ -13,6 +13,12 @@ import VueRouter from 'vue-router'
 Vue.use(VueRouter)
 
 
+//统一导入axios
+import axios from 'axios'
+Vue.prototype.$axios = axios
+//设置基地址
+axios.defaults.baseURL='http://111.230.232.110:8899'
+
 //导入主页组件
 import index from './components/index.vue'
 import cart from './components/cart.vue'
